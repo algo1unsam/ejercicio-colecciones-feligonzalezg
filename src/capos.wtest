@@ -1,0 +1,16 @@
+import capos.*
+
+// auto-generated at 05/04/2022 19:23:20
+test "exported test from REPL session" {
+	
+	rolando.encontreObjeto(espada)
+	rolando.encontreObjeto(espadaDelDestino)
+	rolando.encontreObjeto(collarDivino)
+	rolando.encontreObjeto(libroDeHechizos)
+	rolanddo.volverAlCastilloDePiedra()
+	rolando.volverAlCastilloDePiedra()
+	rolando.encontreObjeto(libroDeHechizos)
+	rolando.encontreObjeto(collarDivino)
+	rolando.volverAlCastilloDePiedra()
+	
+}
