@@ -9,7 +9,7 @@ object castilloDePiedra {
 		artefactosEnCasa.addAll(_artefactosAgarrados)
 	}
 	method artefactoMasPoderosoEnCasa(duenio) {
-		return artefactosEnCasa.map({artefacto => artefacto.aportaPoder(duenio)}).maxIfEmpty({0})
+		return artefactosEnCasa.map({artefacto => artefacto.poder(duenio)}).maxIfEmpty({0})
 	}
 	
 }

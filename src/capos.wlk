@@ -2,18 +2,34 @@ import artefactos.*
 import casas.*
 import enemigos.*
 
+object erethia {
+
+	const property enemigos = #{ archibaldo, caterina, astra }
+
+	method enemigosVencibles(personaje) {
+		return enemigos.filter({ enemigo => personaje.puedeVencer(enemigo) })
+	}
+
+	method moradasConquistables(personaje) {
+		return self.enemigosVencibles(personaje).map({ enemigo => enemigo.casa() })
+	}
+
+	method esPoderoso(personaje) {
+		return enemigos.all({ enemigo => personaje.puedeVencer(enemigo) })
+	} // .all({}) DEVUELVE BOOLEANO SI LOS LOS ELEMENTOS CUMPLEN LA CONDICION DADA
+
+}
+
 object rolando {
 
-	const casa=castilloDePiedra
+	const casa = castilloDePiedra
 	var property poderBase = 5
 	var property capacidad = 2
-//	var property vidas = 3
 	const property artefactosEncontrados = []
 	const property artefactosAgarrados = #{}
-	const property enemigos = #{archibaldo,caterina,astra}
 	const property enemigosDerrotados = []
-	const property casasConquistadas = []
 
+//	const property casasConquistadas = []
 	method encontrar(artefacto) {
 		if (artefacto.cantidad() > 0) {
 			artefactosEncontrados.add(artefacto)
@@ -30,55 +46,80 @@ object rolando {
 	}
 
 	method artefactosAgarradosTotales() {
-		return self.artefactosAgarrados()+casa.artefactosEnCasa()
+		return self.artefactosAgarrados() + casa.artefactosEnCasa()
 	}
 
 	method poderDePelea() {
-		return self.poderBase() + artefactosAgarrados.sum({ artefacto => artefacto.aportaPoder(self) })
+		return self.poderBase() + artefactosAgarrados.sum({ artefacto => artefacto.poder(self) })
 	}
 
 	method batalla() {
 		poderBase += 1
-		artefactosAgarrados.forEach{ artefacto => artefacto.usar() }
+		artefactosAgarrados.forEach{ artefacto => artefacto.usar()}
 	}
 
 	method poderArtefactoMasPoderosoEnCasa() {
 		return casa.artefactoMasPoderosoEnCasa(self)
 	}
-	
-	method atacarTodosEnemigos() {
-		enemigos.forEach{enemigo => if (!enemigo.fueDerrotado()){
-			if (self.poderDePelea() > enemigo.poderDePelea()){
-			self.enemigoDerrotado(enemigo)
-			self.conquistarCasa(enemigo)
-			}//else {vidas -= 1}
-		}}
+
+	method puedeVencer(enemigo) {
+		return self.poderDePelea() > enemigo.poderDePelea()
 	}
-	
-	method atacarEnemigo(enemigo) {
-		if (!enemigo.fueDerrotado()){
-			if (self.poderDePelea() > enemigo.poderDePelea()){
-				self.enemigoDerrotado(enemigo)
-				self.conquistarCasa(enemigo)
-			}//else {vidas -= 1}
-		}//else {return "¡Ese enemigo ya fue derrotado anteriormente!"}
-//		if (vidas == 0) {game.stop()}
+
+	method enemigosVencibles(mundo) {
+		return mundo.enemigosVencibles(self)
 	}
-	
-	method enemigoDerrotado(enemigo) {
-		enemigosDerrotados.add(enemigo)
-		enemigo.derrotado()
+
+	method moradasConquistables(mundo) {
+		return mundo.moradasConquistables(self)
 	}
-	method conquistarCasa(enemigo) {
-		casasConquistadas.add(enemigo.casa())
+
+//	method atacarTodosEnemigos() {
+//		erethia.enemigos().forEach{enemigo => if (!enemigo.fueDerrotado()){
+//			if (self.poderDePelea() > enemigo.poderDePelea()){
+//			self.enemigoDerrotado(enemigo)
+//			self.conquistarCasa(enemigo)
+//			}
+//		}
+//		}
+//	}
+//	
+//	method atacarEnemigo(enemigo) {
+//		if (!enemigo.fueDerrotado()){
+//			if (self.poderDePelea() > enemigo.poderDePelea()){
+//				self.enemigoDerrotado(enemigo)
+//				self.conquistarCasa(enemigo)
+//			}
+//		}
+//	}
+//	
+//	method enemigoDerrotado(enemigo) {
+//		enemigosDerrotados.add(enemigo)
+//		enemigo.derrotado()
+//	}
+//	method conquistarCasa(enemigo) {
+//		casasConquistadas.add(enemigo.casa())
+//	}
+//	
+	method poderoso(mundo) {
+		return mundo.esPoderoso(self)
 	}
-	
-	method esPoderoso() {
-		return self.poderDePelea() > enemigos.map({enemigo => enemigo.poderDePelea()}).maxIfEmpty({0})
+
+//	method esPoderoso() { OPCION RESUELVE PERO NO ES LA MEJOR
+//		return self.poderDePelea() > erethia.enemigos().map({enemigo => enemigo.poderDePelea()}).maxIfEmpty({0})
+//	}
+//	
+	method artefactoFatal(enemigo) {
+		return artefactosAgarrados.find({ artefacto => self.esFatal(artefacto, enemigo) })
 	}
-	
-	method artefactoFatal() {
-		
+
+	method esFatal(artefacto, enemigo) {
+		return artefacto.poder() + self.poderBase() > enemigo.poderDePelea()
 	}
+
+	method tieneArtefactoFatal(enemigo) {
+		return artefactosAgarrados.any({ artefacto => self.esFatal(artefacto, enemigo) })
+	}
+
 }
 

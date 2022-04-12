@@ -7,6 +7,7 @@ object archibaldo {
 	const property casa = palacioDeMarmol
 	var property fueDerrotado = false
 	
+	method poderDePelea() = 16
 	method derrotado() {
 		fueDerrotado = true
 		casa.sinEnemigos()
@@ -14,9 +15,10 @@ object archibaldo {
 }
 
 object caterina {
-	const property poderDePelea = 28
 	const property casa = fortalezaDeAcero
 	var property fueDerrotado = false
+	
+	method poderDePelea() = 28
 	
 	method derrotado() {
 		fueDerrotado = true
@@ -25,9 +27,10 @@ object caterina {
 }
 
 object astra {
-	const property poderDePelea = 14
 	const property casa = torreDeMarfil
 	var property fueDerrotado = false
+	
+	method poderDePelea() = 14
 	
 	method derrotado() {
 		fueDerrotado = true

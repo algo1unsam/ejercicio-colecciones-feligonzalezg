@@ -11,8 +11,12 @@ object espadaDelDestino {
 		usos += 1
 	}
 
-	method aportaPoder(personaje) {
+	method poder(personaje) {
 		return personaje.poderBase() / if (usos == 0) {1} else {2}
+	}
+
+	method esFatal(enemigo, personaje) {
+		return self.poder(personaje) + personaje.poderBase() > enemigo.poderDePelea()
 	}
 
 }
@@ -21,14 +25,18 @@ object armaduraDeAceroValyrio {
 
 	var property cantidad = 1
 
-	method aportaPoder(personaje) {
+	method poder(personaje) {
 		return 6
 	}
-	
+
 	method usar() {
-		//no tiene efecto
+	// no tiene efecto
 	}
-	
+
+	method esFatal(enemigo, personaje) {
+		return self.poder(personaje) + personaje.poderBase() > enemigo.poderDePelea()
+	}
+
 }
 
 object collarDivino {
@@ -40,8 +48,12 @@ object collarDivino {
 		usos += 1
 	}
 
-	method aportaPoder(personaje) {
+	method poder(personaje) {
 		return 3 + if (personaje.poderBase() > 6) {1} else {0}
+	}
+
+	method esFatal(enemigo, personaje) {
+		return self.poder(personaje) + personaje.poderBase() > enemigo.poderDePelea()
 	}
 
 }
@@ -49,32 +61,47 @@ object collarDivino {
 object libroDeHechizos {
 
 	var property cantidad = 1
-	var hechizos = [bendicion,invisibilidad,invocacion]
-	
+	var hechizos = [ bendicion, invisibilidad, invocacion ]
+
 	method usar() {
 		hechizos = hechizos.drop(1)
 	}
-	
-	method aportaPoder(personaje) {
-		return if (hechizos.isEmpty()) {0} else {hechizos.first().aportaPoder(personaje)}
+
+	method poder(personaje) {
+		return if (hechizos.isEmpty()) {
+			0
+		} else {
+			hechizos.first().poder(personaje)
+		}
 	}
-	
+
+	method esFatal(enemigo, personaje) {
+		return self.poder(personaje) + personaje.poderBase() > enemigo.poderDePelea()
+	}
+
 }
 
 object bendicion {
-	method aportaPoder(personaje) {
+
+	method poder(personaje) {
 		return 4
 	}
+
 }
 
 object invisibilidad {
-	method aportaPoder(personaje) {
+
+	method poder(personaje) {
 		return personaje.poderBase()
 	}
+
 }
 
 object invocacion {
-	method aportaPoder(personaje) {
+
+	method poder(personaje) {
 		return personaje.poderArtefactoMasPoderosoEnCasa()
 	}
+
 }
+
