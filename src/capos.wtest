@@ -1,16 +1,15 @@
 import capos.*
+import artefactos.*
+import casas.*
+import enemigos.*
 
-// auto-generated at 05/04/2022 19:23:20
-test "exported test from REPL session" {
-	
-	rolando.encontreObjeto(espada)
-	rolando.encontreObjeto(espadaDelDestino)
-	rolando.encontreObjeto(collarDivino)
-	rolando.encontreObjeto(libroDeHechizos)
-	rolanddo.volverAlCastilloDePiedra()
-	rolando.volverAlCastilloDePiedra()
-	rolando.encontreObjeto(libroDeHechizos)
-	rolando.encontreObjeto(collarDivino)
-	rolando.volverAlCastilloDePiedra()
-	
+test "Rolando conquista palacio y torre" {
+	rolando.capacidad(3)
+	rolando.poderBase(5)
+	rolando.encontrar(espadaDelDestino)
+	rolando.encontrar(armaduraDeAceroValyrio)
+	rolando.encontrar(collarDivino)
+	rolando.atacarTodosEnemigos()
+	assert.equals([ archibaldo, astra ], rolando.enemigosDerrotados())
+	assert.equals([ palacioDeMarmol, torreDeMarfil ], rolando.casasConquistadas())
 }

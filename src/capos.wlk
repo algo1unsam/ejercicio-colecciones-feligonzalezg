@@ -1,42 +1,84 @@
 import artefactos.*
+import casas.*
 import enemigos.*
 
 object rolando {
 
+	const casa=castilloDePiedra
 	var property poderBase = 5
-	var property poderDePelea = poderBase
 	var property capacidad = 2
-	var property objetosEncontrados = []
-	const property objetosAgarrados = #{}
-	const property objetosEnCastillo = #{}
+//	var property vidas = 3
+	const property artefactosEncontrados = []
+	const property artefactosAgarrados = #{}
+	const property enemigos = #{archibaldo,caterina,astra}
+	const property enemigosDerrotados = []
+	const property casasConquistadas = []
 
-	method encontreObjeto(objeto) {
-		if (objeto.cantidad() > 0) {
-			objetosEncontrados.add(objeto)
-			objeto.cantidad(objeto.cantidad() - 1)
-			if (objetosAgarrados.size() < capacidad) {
-				objetosAgarrados.add(objeto)
-				poderDePelea += objeto.aportaPoder(poderBase)
+	method encontrar(artefacto) {
+		if (artefacto.cantidad() > 0) {
+			artefactosEncontrados.add(artefacto)
+			artefacto.cantidad(artefacto.cantidad() - 1)
+			if (artefactosAgarrados.size() < capacidad) {
+				artefactosAgarrados.add(artefacto)
 			}
 		}
 	}
 
-	method volverAlCastilloDePiedra() {
-		objetosEnCastillo.addAll(objetosAgarrados)
-		objetosAgarrados.clear()
-		self.poderDePelea(poderBase)
+	method volverACasa() {
+		casa.dejarArtefactos(artefactosAgarrados)
+		artefactosAgarrados.clear()
 	}
 
-	method objetosAgarradosTotales() {
-		return self.objetosAgarrados()+self.objetosEnCastillo()
+	method artefactosAgarradosTotales() {
+		return self.artefactosAgarrados()+casa.artefactosEnCasa()
+	}
+
+	method poderDePelea() {
+		return self.poderBase() + artefactosAgarrados.sum({ artefacto => artefacto.aportaPoder(self) })
 	}
 
 	method batalla() {
 		poderBase += 1
-		objetosAgarrados.forEach{ objeto => objeto.aumentaUso()}
-		poderDePelea = poderBase
-		poderDePelea += objetosAgarrados.forEach{ objeto => objeto.aportaPoder(poderBase) }
+		artefactosAgarrados.forEach{ artefacto => artefacto.usar() }
 	}
 
+	method poderArtefactoMasPoderosoEnCasa() {
+		return casa.artefactoMasPoderosoEnCasa(self)
+	}
+	
+	method atacarTodosEnemigos() {
+		enemigos.forEach{enemigo => if (!enemigo.fueDerrotado()){
+			if (self.poderDePelea() > enemigo.poderDePelea()){
+			self.enemigoDerrotado(enemigo)
+			self.conquistarCasa(enemigo)
+			}//else {vidas -= 1}
+		}}
+	}
+	
+	method atacarEnemigo(enemigo) {
+		if (!enemigo.fueDerrotado()){
+			if (self.poderDePelea() > enemigo.poderDePelea()){
+				self.enemigoDerrotado(enemigo)
+				self.conquistarCasa(enemigo)
+			}//else {vidas -= 1}
+		}//else {return "¡Ese enemigo ya fue derrotado anteriormente!"}
+//		if (vidas == 0) {game.stop()}
+	}
+	
+	method enemigoDerrotado(enemigo) {
+		enemigosDerrotados.add(enemigo)
+		enemigo.derrotado()
+	}
+	method conquistarCasa(enemigo) {
+		casasConquistadas.add(enemigo.casa())
+	}
+	
+	method esPoderoso() {
+		return self.poderDePelea() > enemigos.map({enemigo => enemigo.poderDePelea()}).maxIfEmpty({0})
+	}
+	
+	method artefactoFatal() {
+		
+	}
 }
 
